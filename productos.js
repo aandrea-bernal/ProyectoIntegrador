@@ -55,7 +55,7 @@ const products = [
     // ... Más productos aquí
 ];
 
-Función para renderizar los productos
+//Función para renderizar los productos
 function renderProducts(filter = "all") {
     const productGrid = document.getElementById("product-grid");
     productGrid.innerHTML = "";  // Limpiar los productos actuales
