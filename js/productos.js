@@ -1,9 +1,3 @@
-// Variable que representa al usuario actual (puedes obtener esta información de un sistema de autenticación)
-const currentUser = {
-    id: 1, // ID del usuario
-    role: "admin" // Rol del usuario (puede ser "admin", "user", etc.)
-};
-
 // Lista de productos con sus categorías
 const products = [
     { id: 1, name: "Laptop Acer Aspire 3", category: "Laptops", price: "$8,700 MXN", img:"./src/img/productos/img_Andy/ACER2.jpg" },
@@ -60,63 +54,7 @@ const products = [
     // ... Más productos aquí
 ];
 
-// Función para redirigir al carrito
-function redirectToCart() {
-    console.log("Producto agregado al carrito");
-}
 
-// Función para editar un producto y redirigir
-function editProductAndRedirect(productId) {
-    console.log(`Editando producto con ID: ${productId}`);
-    // Lógica para redirigir a la página de edición
-}
-
-// Función para eliminar un producto
-function deleteProduct(productId) {
-    console.log(`Eliminando producto con ID: ${productId}`);
-    // Lógica para eliminar el producto
-}
-
-// Función para renderizar los productos
-function renderProducts(filter = "all") {
-    const productGrid = document.getElementById("product-grid");
-    productGrid.innerHTML = ""; // Limpiar los productos actuales
-
-    const filteredProducts = filter === "all" ? products : products.filter(product => product.category === filter);
-
-    filteredProducts.forEach(product => {
-        const productCard = document.createElement("article");
-        productCard.classList.add("product-card");
-
-        // Renderiza los botones solo si el usuario tiene permisos
-        const adminButtons = currentUser.role === "admin"
-            ? `
-            <button onclick="editProductAndRedirect(${product.id})">Editar</button>
-            <button onclick="deleteProduct(${product.id})">Borrar</button>
-        ` : "";
-
-        productCard.innerHTML = `
-            <img src="${product.img}" alt="${product.name}">
-            <h2>${product.name}</h2>
-            <p>${product.price}</p>
-            <button onclick="redirectToCart()">Agregar al carrito</button>
-            ${adminButtons}
-        `;
-
-        productGrid.appendChild(productCard);
-    });
-}
-
-// Inicializar la renderización de productos
-document.addEventListener("DOMContentLoaded", () => {
-    renderProducts(); // Renderiza todos los productos por defecto
-});
-
-
-
-
-
-/*
 // Función para renderizar los productos
 function renderProducts(filter = "all") {
     const productGrid = document.getElementById("product-grid");
@@ -192,4 +130,63 @@ function clearAllProducts(){
 function redirectToCart() {
     window.location.href = 'carrito.html';
   }
-    */
+
+
+
+// Variable para definir si el usuario es administrador
+const isAdmin = true; // Cambia a false para probar como usuario regular
+
+// Función para renderizar los productos
+function renderProducts(filter = "all") {
+    const productGrid = document.getElementById("product-grid");
+    productGrid.innerHTML = ""; // Limpiar los productos actuales
+
+    const filteredProducts = filter === "all" ? products : products.filter(product => product.category === filter);
+
+    filteredProducts.forEach(product => {
+        const productCard = document.createElement("article");
+        productCard.classList.add("product-card");
+
+        // Botones condicionales para el administrador
+        const adminButtons = isAdmin
+            ? `
+            <button onclick="editProductAndRedirect(${product.id})">Editar</button>
+            <button onclick="deleteProduct(${product.id})">Borrar</button>
+            `
+            : "";
+
+        productCard.innerHTML = `
+            <img src="${product.img}" alt="${product.name}">
+            <h2>${product.name}</h2>
+            <p>${product.price}</p>
+            <button onclick="redirectToCart()">Agregar al carrito</button>
+            ${adminButtons}
+        `;
+
+        productGrid.appendChild(productCard);
+    });
+}
+
+// Simula si el usuario es administrador. 
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const deleteAllProductsBtn = document.getElementById("delete-all-products-btn");
+
+    // Muestra el botón solo si el usuario es administrador
+    if (isAdmin) {
+        deleteAllProductsBtn.classList.remove("d-none");
+    }
+});
+
+
+
+// Cargar productos al cargar la página
+window.onload = () => {
+    renderProducts();
+};
+
+// Filtrar productos cuando cambie el select
+document.getElementById("category-filter").addEventListener("change", (event) => {
+    renderProducts(event.target.value);
+});
